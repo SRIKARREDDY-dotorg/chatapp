@@ -20,13 +20,34 @@
                 const {type, payload} = JSON.parse(event.data);
                 if(type === "ADD_CHAT") {
                     const textNode = document.createElement("p");
-                    textNode.innerHTML = payload.message + `(${payload.upvotes})`;
+                    textNode.innerHTML = payload.message;
+                    const buttonNode = document.createElement("button");
+                    buttonNode.innerHTML = `(${payload.upvotes})`;
+                    buttonNode.setAttribute("onclick", `sendUpvote(${payload.chatId})`);
+                    buttonNode.setAttribute("id", `message-${payload.chatId}`);
                     document.getElementById("messages").append(textNode);
+                    document.getElementById("messages").append(buttonNode);
+                }
+                if(type === "UPDATE_CHAT") {
+                    const buttonNode = document.getElementById(`message-${payload.chatId}`);
+                    buttonNode.innerHTML = `(${payload.upvotes})`;
                 }
             } catch(e) {
                 console.error(e);
             }
         }
+
+        function sendUpvote(chatId) {
+            ws.send(JSON.stringify({
+                type: "UPVOTE_MESSAGE",
+                payload: {
+                    chatId,
+                    userId: userId,
+                    roomId: "2"
+                }
+            }))
+        }
+
         function sendChat() {
             ws.send(JSON.stringify({
                 type: "SEND_MESSAGE",

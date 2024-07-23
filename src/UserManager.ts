@@ -28,9 +28,10 @@ export class UserManager {
             id: userId,
             name,
             conn: socket
-        })
+        });
+        
         socket.on('close', (reasonCode, description) => {
-            // console.log((new Date()) + ' Peer ' + socket.remoteAddress + ' disconnected.');
+            console.log((new Date()) + ' Peer ' + socket.remoteAddress + ' disconnected.');
             this.removeUser(roomId, userId);
         });
     }
